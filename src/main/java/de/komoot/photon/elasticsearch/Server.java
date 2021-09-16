@@ -1,13 +1,11 @@
 package de.komoot.photon.elasticsearch;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.index.IndexNotFoundException;
 import org.elasticsearch.node.InternalSettingsPreparer;
 import org.elasticsearch.node.Node;
@@ -15,22 +13,16 @@ import org.elasticsearch.node.NodeValidationException;
 import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.transport.Netty4Plugin;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.InetSocketAddress;
+import java.net.InetAddress;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Helper class to start/stop elasticsearch node and get elasticsearch clients
@@ -49,7 +41,7 @@ public class Server {
 
     protected static class MyNode extends Node {
         public MyNode(Settings preparedSettings, Collection<Class<? extends Plugin>> classpathPlugins) {
-            super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins);
+            super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, new HashMap<>(), null, () -> "node-test"), classpathPlugins, false);
         }
     }
 
@@ -79,9 +71,17 @@ public class Server {
                 if (index >= 0) {
                     int port = Integer.parseInt(tAddr.substring(index + 1));
                     String addrStr = tAddr.substring(0, index);
-                    trClient.addTransportAddress(new InetSocketTransportAddress(new InetSocketAddress(addrStr, port)));
+                    try {
+                        trClient.addTransportAddress(new TransportAddress(InetAddress.getByName(addrStr), port));
+                    } catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    }
                 } else {
-                    trClient.addTransportAddress(new InetSocketTransportAddress(new InetSocketAddress(tAddr, 9300)));
+                    try {
+                        trClient.addTransportAddress(new TransportAddress(InetAddress.getByName(tAddr), 9300));
+                    } catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 

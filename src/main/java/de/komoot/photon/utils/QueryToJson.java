@@ -16,8 +16,7 @@ public class QueryToJson {
 
     public String convert(QueryBuilder anItem) {
         try {
-            BytesReference bytes = anItem.toXContent(JsonXContent.contentBuilder(), new ToXContent.MapParams(null))
-                    .bytes();
+            BytesReference bytes = BytesReference.bytes(anItem.toXContent(JsonXContent.contentBuilder(), new ToXContent.MapParams(null)));
 
             return bytes.utf8ToString();
         } catch (IOException e) {

@@ -32,7 +32,7 @@ public class PhotonRequestHandler {
         int limit = photonRequest.getLimit();
         int extLimit = limit > 1 ? (int) Math.round(photonRequest.getLimit() * 1.5) : 1;
         SearchResponse results = elasticsearchSearcher.search(queryBuilder.buildQuery(), extLimit);
-        if (results.getHits().getTotalHits() == 0) {
+        if (results.getHits().getTotalHits().value == 0) {
             lastLenient = true;
             results = elasticsearchSearcher.search(buildQuery(photonRequest, true).buildQuery(), extLimit);
         }
