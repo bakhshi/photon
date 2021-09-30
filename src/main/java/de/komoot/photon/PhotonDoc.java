@@ -31,6 +31,7 @@ public class PhotonDoc {
     private Envelope bbox = null;
     private long parentPlaceId = 0; // 0 if unset
     private double importance = 0;
+    private int popularity = 0;
     private CountryCode countryCode = null;
     private long linkedPlaceId = 0; // 0 if unset
     private int rankAddress = 30;
@@ -142,6 +143,12 @@ public class PhotonDoc {
 
     public PhotonDoc importance(Double importance) {
         this.importance = importance;
+
+        return this;
+    }
+
+    public PhotonDoc popularity(int popularity) {
+        this.popularity = popularity;
 
         return this;
     }

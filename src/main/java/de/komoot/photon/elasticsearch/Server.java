@@ -58,6 +58,7 @@ public class Server {
     }
 
     public Server start(String clusterName, String transportAddresses) {
+        new PopularityMapper();
         Settings.Builder sBuilder = Settings.builder();
         sBuilder.put("path.home", this.esDirectory.toString());
         sBuilder.put("network.host", "127.0.0.1"); // http://stackoverflow.com/a/15509589/1245622

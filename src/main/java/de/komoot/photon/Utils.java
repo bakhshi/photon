@@ -5,6 +5,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 import com.neovisionaries.i18n.CountryCode;
 import com.vividsolutions.jts.geom.Envelope;
+import de.komoot.photon.elasticsearch.PopularityMapper;
 import de.komoot.photon.nominatim.model.AddressType;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
@@ -32,6 +33,9 @@ public class Utils {
                 .field(Constants.OSM_VALUE, doc.getTagValue())
                 .field(Constants.OBJECT_TYPE, atype == null ? "locality" : atype.getName())
                 .field(Constants.IMPORTANCE, doc.getImportance());
+
+        PopularityMapper popularityMapper = new PopularityMapper();
+        builder.field(Constants.POPULARITY, popularityMapper.calculatePopularity(doc));
 
         if (doc.getCentroid() != null) {
             builder.startObject("coordinate")

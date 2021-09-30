@@ -73,6 +73,9 @@
 			"importance": {
 				"type": "float"
 			},
+			"popularity": {
+				"type": "integer"
+			},
 			"name": {
 				"properties": {
 					"alt": {
